@@ -155,6 +155,26 @@ footer{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.7}
 .grow{animation:grow .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.25s + var(--i,0)*90ms)}
 @media (prefers-reduced-motion:reduce){.anim,.grow{animation:none}html{scroll-behavior:auto}}
 
+/* PDF 받기 버튼 */
+.pdfbtn{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-top:10px;padding:7px 14px;border-radius:999px;background:var(--hero-fg);color:var(--hero);font-size:14px;font-weight:700;text-decoration:none}
+.pdfbtn svg.i{width:18px;height:18px}
+
+/* 인쇄·PDF: 모션 끄고, 바로가기·버튼 숨기고, 카드가 쪽 경계에서 잘리지 않게 */
+@media print{
+  @page{size:A4;margin:12mm 10mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .anim,.grow{animation:none!important}
+  nav.toc,.pdfbtn,body::before{display:none!important}
+  html{scroll-behavior:auto}
+  body{font-size:15px;background:#fff}
+  .wrap{max-width:none;gap:20px;padding:0}
+  .hero{margin-inline:0;border-radius:16px}
+  .links a{background:#fff}
+  article.item,.t3,.tl-row,.dist a,.idea-grid div{break-inside:avoid}
+  .sh{break-after:avoid}
+  .links a::after{content:""}
+}
+
 @media (max-width:480px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero h1{font-size:24px}
@@ -165,7 +185,8 @@ footer{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.7}
 <header class="hero">
 <div class="anim" style="--i:0"><div class="eyebrow">(주)비앤비엘 · 건강기능식품 데일리 브리핑</div>
 <h1>11월 9일 월요일</h1>
-<div class="meta">2026-11-09 10:05 KST 작성 · 출처 20곳 확인</div></div>
+<div class="meta">2026-11-09 10:05 KST 작성 · 출처 20곳 확인</div>
+<a class="pdfbtn" href="2026-11-09.pdf" download><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF 받기</a></div>
 <div class="kpis">
 <div class="kpi anim" style="--i:1"><div class="v num"><span data-count="16">16</span><small>건</small></div><div class="k">오늘 정리한 소식</div></div>
 <div class="kpi anim" style="--i:2"><div class="v num"><span data-count="10">10</span><small>건</small></div><div class="k">정부·공공기관 발표</div></div>

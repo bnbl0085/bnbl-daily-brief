@@ -1,0 +1,506 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>건기식 데일리 브리핑</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 레이아웃: 휴대폰 기준 단일 칼럼(최대 720px). 숫자 요약판 -> 핵심 3 -> 마감 타임라인 -> 분야 분포 -> 분야별 카드 -> 기획 -> 출처 */
+:root{
+  --bg:#eef2f2; --surface:#ffffff; --sunken:#e6ecec; --line:#d6dfdf;
+  --fg:#132227; --muted:#52646a; --faint:#8a9a9f;
+  --accent:#0b6e66; --accent-ink:#ffffff; --accent-soft:#dcf0ec;
+  --hero:#0d3b3a; --hero-fg:#eaf6f4; --hero-muted:#9cc7c1;
+  --c-off:#1f8a52; --c-press:#2f64c0; --c-sns:#b9770c;
+  --due:#b3261e; --due-soft:#fbe6e3; --warn-soft:#fff1d6; --warn:#8a5a00;
+  --f-head:"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif;
+  --f-body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1617; --surface:#162123; --sunken:#1c2a2c; --line:#283a3d;
+  --fg:#e3eced; --muted:#a0b2b6; --faint:#6f8287;
+  --accent:#4cc3b5; --accent-ink:#06211f; --accent-soft:#143330;
+  --hero:#0a2e2c; --hero-fg:#e3f4f1; --hero-muted:#8fbdb6;
+  --c-off:#33a064; --c-press:#5585d8; --c-sns:#b98024;
+  --due:#ff8b82; --due-soft:#3b1c1a; --warn-soft:#3a2b10; --warn:#f2c46b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1617; --surface:#162123; --sunken:#1c2a2c; --line:#283a3d;
+  --fg:#e3eced; --muted:#a0b2b6; --faint:#6f8287;
+  --accent:#4cc3b5; --accent-ink:#06211f; --accent-soft:#143330;
+  --hero:#0a2e2c; --hero-fg:#e3f4f1; --hero-muted:#8fbdb6;
+  --c-off:#33a064; --c-press:#5585d8; --c-sns:#b98024;
+  --due:#ff8b82; --due-soft:#3b1c1a; --warn-soft:#3a2b10; --warn:#f2c46b; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:720px;margin:0 auto;padding-block:0 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:30px}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0;line-height:1.35}
+svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.num{font-family:var(--f-head);font-variant-numeric:tabular-nums}
+
+/* 히어로 + 숫자 요약판 */
+.hero{background:var(--hero);color:var(--hero-fg);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-block:28px 22px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));border-radius:0 0 22px 22px;display:flex;flex-direction:column;gap:18px}
+.hero .eyebrow{font-size:13px;letter-spacing:.08em;color:var(--hero-muted)}
+.hero h1{font-size:27px;font-weight:700}
+.hero .meta{font-size:13.5px;color:var(--hero-muted)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .v{font-size:30px;font-weight:700;line-height:1.1}
+.kpi .v small{font-size:15px;font-weight:500;margin-left:2px}
+.kpi .k{font-size:12.5px;color:var(--hero-muted);line-height:1.4}
+.kpi.alert .v{color:#ffb4ab}
+
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:-4px;margin-top:-12px;padding:8px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+nav.toc::-webkit-scrollbar{display:none}
+nav.toc a{flex:none;text-decoration:none;color:var(--fg);font-size:14.5px;padding:6px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+
+section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:60px}
+.sh{display:flex;align-items:center;gap:10px}
+.sh .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
+.sh h2{font-size:21px}
+.sh .count{margin-left:auto;font-size:13.5px;color:var(--muted)}
+
+/* 핵심 3 */
+.top3{display:flex;flex-direction:column;gap:12px}
+.t3{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 16px 16px 14px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px;align-items:start}
+.t3 .n{grid-row:span 3;font-family:var(--f-head);font-size:34px;font-weight:700;color:var(--accent);line-height:1;text-align:center}
+.t3 .cat{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.t3 .cat svg.i{width:16px;height:16px}
+.t3 b{font-family:var(--f-head);font-size:18.5px;line-height:1.4}
+.t3 p{margin:0;color:var(--muted);font-size:15.5px}
+
+/* 차트 공통 */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.axis{position:relative;height:18px;font-size:11.5px;color:var(--faint);margin-left:0}
+.axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.axis span:first-child{transform:none}
+.axis span:last-child{transform:translateX(-100%)}
+
+/* 마감 타임라인 */
+.tl{display:flex;flex-direction:column;gap:14px}
+.tl-row{display:flex;flex-direction:column;gap:5px}
+.tl-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.tl-top .l{font-size:15px;line-height:1.5;min-width:0}
+.tl-top .d{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.track{position:relative;height:26px;background:var(--sunken);border-radius:7px;overflow:hidden}
+.track .fill{position:absolute;inset:0 auto 0 0;border-radius:7px;background:linear-gradient(90deg,var(--due) 0%,color-mix(in srgb,var(--due) 55%,var(--surface)) 100%);transform-origin:left center;min-width:56px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px}
+.track .fill b{font-family:var(--f-head);font-size:13px;color:#fff;font-variant-numeric:tabular-nums}
+.track.far .fill{background:linear-gradient(90deg,var(--accent) 0%,color-mix(in srgb,var(--accent) 55%,var(--surface)) 100%)}
+.track.far .fill b{color:var(--accent-ink)}
+.track.past .fill{background:var(--faint)}
+
+/* 분야 분포 */
+.dist{display:flex;flex-direction:column;gap:10px}
+.dist a{display:grid;grid-template-columns:86px minmax(0,1fr) 40px;gap:10px;align-items:center;text-decoration:none;color:var(--fg);font-size:14.5px}
+.bar{display:flex;gap:2px;height:20px}
+.bar i{display:block;height:100%;border-radius:4px;transform-origin:left center}
+.bar .off{background:var(--c-off)}.bar .press{background:var(--c-press)}.bar .sns{background:var(--c-sns)}
+.dist .c{font-size:13.5px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+
+/* 소식 카드 */
+article.item{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:11px;min-width:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.tag{padding:2px 9px;border-radius:999px;font-weight:700;border:1px solid currentColor}
+.tag.off{color:var(--c-off)}.tag.press{color:var(--c-press)}.tag.sns{color:var(--c-sns)}
+.tag.flag{border-color:transparent;background:var(--due-soft);color:var(--due);font-weight:500}
+.tags .date{color:var(--muted);font-variant-numeric:tabular-nums}
+article.item h3{font-size:19px;font-weight:700}
+.lead{margin:0;font-size:16.5px}
+.meter{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;color:var(--muted)}
+.lv{display:inline-flex;align-items:center;gap:6px}
+.lv .bars{display:inline-flex;gap:3px;align-items:flex-end}
+.lv .bars i{width:6px;border-radius:2px;background:var(--line)}
+.lv .bars i:nth-child(1){height:8px}.lv .bars i:nth-child(2){height:12px}.lv .bars i:nth-child(3){height:16px}
+.lv[data-l="1"] .bars i:nth-child(-n+1),.lv[data-l="2"] .bars i:nth-child(-n+2),.lv[data-l="3"] .bars i{background:var(--accent)}
+.lv[data-l="3"] .bars i{background:var(--due)}
+.lv b{color:var(--fg);font-weight:700}
+.who{display:inline-flex;flex-wrap:wrap;gap:4px}
+.who span{background:var(--sunken);color:var(--fg);padding:1px 8px;border-radius:6px;font-size:12.5px}
+.pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.pts li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;font-size:15.5px}
+.pts li::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--accent);margin-top:.62em}
+.impact{background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:15.5px;display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px}
+.impact svg.i{color:var(--accent);margin-top:2px}
+.impact strong{display:block;font-family:var(--f-head);font-size:12.5px;letter-spacing:.05em;color:var(--accent)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{font-size:13.5px;text-decoration:none;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg)}
+.links a::after{content:" \2197"}
+.empty{background:var(--sunken);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:15px;margin:0}
+.note{font-size:13.5px;color:var(--muted);margin:0}
+
+/* 제품기획 */
+.idea-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.idea-grid div{background:var(--sunken);border-radius:10px;padding:9px 11px;min-width:0}
+.idea-grid div.wide{grid-column:1/-1}
+.idea-grid dt{font-size:12px;color:var(--muted);letter-spacing:.03em}
+.idea-grid dd{margin:0;font-size:15px;line-height:1.55}
+.idea-grid div.warn{background:var(--warn-soft)}
+.idea-grid div.warn dt{color:var(--warn)}
+
+details.src{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+details.src summary{cursor:pointer;font-family:var(--f-head);font-weight:700;font-size:16.5px}
+details.src ol{margin:12px 0 0;padding-left:1.3em;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+footer{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.7}
+
+/* 모션: 로드 시 한 번 떠오르기 + 막대 자라기 */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim{animation:rise .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*70ms)}
+.grow{animation:grow .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.25s + var(--i,0)*90ms)}
+@media (prefers-reduced-motion:reduce){.anim,.grow{animation:none}html{scroll-behavior:auto}}
+
+/* PDF 받기 버튼 */
+.pdfbtn{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-top:10px;padding:7px 14px;border-radius:999px;background:var(--hero-fg);color:var(--hero);font-size:14px;font-weight:700;text-decoration:none}
+.pdfbtn svg.i{width:18px;height:18px}
+
+/* 인쇄·PDF: 모션 끄고, 바로가기·버튼 숨기고, 카드가 쪽 경계에서 잘리지 않게 */
+@media print{
+  @page{size:A4;margin:12mm 10mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .anim,.grow{animation:none!important}
+  nav.toc,.pdfbtn,body::before{display:none!important}
+  html{scroll-behavior:auto}
+  body{font-size:15px;background:#fff}
+  .wrap{max-width:none;gap:20px;padding:0}
+  .hero{margin-inline:0;border-radius:16px}
+  .links a{background:#fff}
+  article.item,.t3,.tl-row,.dist a,.idea-grid div{break-inside:avoid}
+  .sh{break-after:avoid}
+  .links a::after{content:""}
+}
+
+@media (max-width:480px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero h1{font-size:24px}
+  .dist a{grid-template-columns:72px minmax(0,1fr) 34px}
+  .idea-grid{grid-template-columns:minmax(0,1fr)}
+}
+</style></head><body><div class="wrap">
+<header class="hero">
+<div class="anim" style="--i:0"><div class="eyebrow">(주)비앤비엘 · 건강기능식품 데일리 브리핑</div>
+<h1>11월 12일 목요일</h1>
+<div class="meta">2026-11-12 08:57 KST 작성 · 출처 21곳 확인</div>
+<a class="pdfbtn" href="2026-11-12.pdf" download><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF 받기</a></div>
+<div class="kpis">
+<div class="kpi anim" style="--i:1"><div class="v num"><span data-count="13">13</span><small>건</small></div><div class="k">오늘 정리한 소식</div></div>
+<div class="kpi anim" style="--i:2"><div class="v num"><span data-count="9">9</span><small>건</small></div><div class="k">정부·공공기관 발표</div></div>
+<div class="kpi anim" style="--i:3"><div class="v num"><span data-count="4">4</span><small>건</small></div><div class="k">예고 단계 소식</div></div>
+<div class="kpi anim alert" style="--i:4"><div class="v num">D-<span data-count="14">14</span></div><div class="k">가장 가까운 마감</div></div>
+</div></header>
+<nav class="toc" aria-label="바로가기"><a href="#top3">핵심 3</a><a href="#due">마감</a><a href="#dist">한눈에</a>
+<a href="#law">법규·제도</a>
+<a href="#official">발표·단속</a>
+<a href="#rnd">원료·연구</a>
+<a href="#market">시장·해외</a>
+<a href="#marketing">마케팅</a>
+<a href="#ideas">제품기획</a>
+<a href="#sources">출처</a></nav>
+<section id="top3"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg></span><h2>오늘 꼭 볼 3가지</h2></div><div class="top3">
+<div class="t3 anim" style="--i:0"><span class="n">1</span><span class="cat"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>법규·제도</span><b>AI 가짜 의사 광고, 11/27 금지</b><p>AI로 만든 의사·약사 추천 광고가 보름 뒤 불법이 되니 숏폼 소재를 이번 주에 정리하세요.</p></div>
+<div class="t3 anim" style="--i:1"><span class="n">2</span><span class="cat"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>시장·해외</span><b>中, 보건식품 &#x27;공정 쪼개기&#x27; 위탁 금지</b><p>12/1부터 중국 보건식품은 전 공정을 한 수탁사가 맡아야 해 현지 위탁 구조 점검이 필요함.</p></div>
+<div class="t3 anim" style="--i:2"><span class="n">3</span><span class="cat"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>법규·제도</span><b>인수 전 행정처분 이력 조회(예고)</b><p>몰랐음을 증명하면 전 영업자 처분이 승계되지 않는 안으로, 의견은 12/2까지 받음.</p></div>
+</div></section>
+<section id="due"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><h2>마감 타임라인</h2><span class="count">8건</span></div>
+<div class="panel"><div class="axis">
+<span style="left:0.0%">오늘</span>
+<span style="left:50.0%">30일</span>
+<span style="left:100.0%">60일</span>
+</div><div class="tl">
+<div class="tl-row anim" style="--i:0"><div class="tl-top"><span class="l">나트륨·당류 저감 표시기준 개정안 의견</span><span class="d">11/26(목) 의견 마감</span></div>
+<div class="track " title="11/26(목) · 의견 마감 · 나트륨·당류 저감 표시기준 개정안 의견"><div class="fill grow" style="width:23.3%;--i:0"><b>D-14</b></div></div></div>
+<div class="tl-row anim" style="--i:1"><div class="tl-top"><span class="l">AI 가짜 전문가 추천 광고 금지(식품표시광고법)</span><span class="d">11/27(금) 시행</span></div>
+<div class="track " title="11/27(금) · 시행 · AI 가짜 전문가 추천 광고 금지(식품표시광고법)"><div class="fill grow" style="width:25.0%;--i:1"><b>D-15</b></div></div></div>
+<div class="tl-row anim" style="--i:2"><div class="tl-top"><span class="l">중국 식품 위탁생산 감독관리 규정(보건식품 포함)</span><span class="d">12/1(화) 시행</span></div>
+<div class="track " title="12/1(화) · 시행 · 중국 식품 위탁생산 감독관리 규정(보건식품 포함)"><div class="fill grow" style="width:31.7%;--i:2"><b>D-19</b></div></div></div>
+<div class="tl-row anim" style="--i:3"><div class="tl-top"><span class="l">건기식법 등 54개 법률 처분 승계 개정안 의견</span><span class="d">12/2(수) 의견 마감</span></div>
+<div class="track " title="12/2(수) · 의견 마감 · 건기식법 등 54개 법률 처분 승계 개정안 의견"><div class="fill grow" style="width:33.3%;--i:3"><b>D-20</b></div></div></div>
+<div class="tl-row anim" style="--i:4"><div class="tl-top"><span class="l">식약처 2027년 1차 용역연구개발 과제(오전 11시)</span><span class="d">12/7(월) 공모 마감</span></div>
+<div class="track " title="12/7(월) · 공모 마감 · 식약처 2027년 1차 용역연구개발 과제(오전 11시)"><div class="fill grow" style="width:41.7%;--i:4"><b>D-25</b></div></div></div>
+<div class="tl-row anim" style="--i:5"><div class="tl-top"><span class="l">건강기능식품 기준·규격 개정안 의견</span><span class="d">12/23(수) 의견 마감</span></div>
+<div class="track far" title="12/23(수) · 의견 마감 · 건강기능식품 기준·규격 개정안 의견"><div class="fill grow" style="width:68.3%;--i:5"><b>D-41</b></div></div></div>
+<div class="tl-row anim" style="--i:6"><div class="tl-top"><span class="l">건강기능식품 GMO 표시 개정 법률 시행</span><span class="d">12/31(목) 시행</span></div>
+<div class="track far" title="12/31(목) · 시행 · 건강기능식품 GMO 표시 개정 법률 시행"><div class="fill grow" style="width:81.7%;--i:6"><b>D-49</b></div></div></div>
+<div class="tl-row anim" style="--i:7"><div class="tl-top"><span class="l">2027년 재평가 대상 원료 10종 안전성·기능성 자료</span><span class="d">12/31(목) 제출 기한</span></div>
+<div class="track far" title="12/31(목) · 제출 기한 · 2027년 재평가 대상 원료 10종 안전성·기능성 자료"><div class="fill grow" style="width:81.7%;--i:7"><b>D-49</b></div></div></div>
+</div>
+<p class="note">막대 길이 = 오늘부터 마감까지 남은 날. 빨간 막대는 30일 이내.</p></div>
+</section>
+<section id="dist"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg></span><h2>분야별 한눈에</h2><span class="count">총 13건</span></div><div class="panel">
+<div class="legend"><span><i style="background:var(--c-off)"></i>공식 발표</span><span><i style="background:var(--c-press)"></i>언론 보도</span><span><i style="background:var(--c-sns)"></i>SNS·확인필요</span></div><div class="dist">
+<a href="#law"><span>법규·제도</span><span class="bar"><i class="off grow" style="width:75.0%;--i:0" title="법규·제도 · 공식 3건"></i><i class="press grow" style="width:25.0%;--i:0" title="법규·제도 · 언론 1건"></i></span><span class="c">4건</span></a>
+<a href="#official"><span>발표·단속</span><span class="bar"><i class="off grow" style="width:25.0%;--i:1" title="발표·단속 · 공식 1건"></i><i class="press grow" style="width:25.0%;--i:1" title="발표·단속 · 언론 1건"></i></span><span class="c">2건</span></a>
+<a href="#rnd"><span>원료·연구</span><span class="bar"><i class="off grow" style="width:25.0%;--i:2" title="원료·연구 · 공식 1건"></i><i class="press grow" style="width:50.0%;--i:2" title="원료·연구 · 언론 2건"></i></span><span class="c">3건</span></a>
+<a href="#market"><span>시장·해외</span><span class="bar"><i class="off grow" style="width:50.0%;--i:3" title="시장·해외 · 공식 2건"></i></span><span class="c">2건</span></a>
+<a href="#marketing"><span>마케팅</span><span class="bar"><i class="off grow" style="width:50.0%;--i:4" title="마케팅 · 공식 2건"></i></span><span class="c">2건</span></a>
+</div></div></section>
+<section id="law"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><h2>법규·제도</h2><span class="count">4건</span></div>
+<article class="item anim" style="--i:0"><div class="tags"><span class="tag press">언론</span>
+<span class="tag flag">시행 11/27</span>
+<span class="tag flag">처분기준은 예고안</span>
+<span class="date">2026-05-26 공포</span>
+</div><h3>AI 가짜 의사·약사 광고, 11/27부터 금지</h3>
+<p class="lead">AI로 만든 가상 전문가가 식품·건기식을 추천하는 광고가 부당광고로 명시된다.</p>
+<div class="meter">
+<span class="lv" data-l="3"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>매우 중요</b></span>
+<span class="who"><span>마케팅</span><span>영업</span></span>
+</div>
+<ul class="pts"><li>식품표시광고법 개정, 5/26 공포·11/27 시행</li><li>위반 시 5년 이하 징역 또는 5천만원 이하 벌금</li><li>처분안: 제조업자 1차 영업정지 15일~3차 2개월</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>고객사별로 숏폼·상세페이지의 AI 의사·약사 소재를 내렸는지 11/26까지 확인 목록으로 받아 두세요.</div></div>
+<div class="links"><a href="https://dailypharm.com/user/news/341236" target="_blank" rel="noopener">데일리팜</a><a href="https://www.kpanews.co.kr/news/articleView.html?idxno=535559" target="_blank" rel="noopener">약사공론</a></div>
+</article>
+<article class="item anim" style="--i:1"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">시행 12/31</span>
+<span class="tag flag">지정 대상 고시 확인 필요</span>
+<span class="date">2025-12-30 공포</span>
+</div><h3>건기식 GMO 표시 기준, 12/31 시행</h3>
+<p class="lead">GMO DNA·단백질이 안 남아도 식약처장이 지정하면 건기식에 GMO 표시를 해야 한다.</p>
+<div class="meter">
+<span class="lv" data-l="3"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>매우 중요</b></span>
+<span class="who"><span>품질·RA</span><span>기획</span><span>생산</span></span>
+</div>
+<ul class="pts"><li>건기식법 개정(법률 제21298호), 12/31 시행</li><li>시행 후 처음 제조·수입 선적한 제품부터 적용</li><li>요건 충족 시 &#x27;GMO 아님&#x27; 표시 가능</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>대두·옥수수 유래 부원료(레시틴·덱스트린 등)는 원료사 GMO 증빙을 이달 안에 받아 두세요.</div></div>
+<div class="links"><a href="https://www.khff.or.kr/user/info/InfoBoardUserView.do?_menuNo=402&amp;boardSeqno=10010&amp;postsSeqno=120210" target="_blank" rel="noopener">건강기능식품협회 법률 개정사항</a><a href="https://www.foodtoday.or.kr/mobile/article.html?no=206237" target="_blank" rel="noopener">푸드투데이</a></div>
+</article>
+<article class="item anim" style="--i:2"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">예고 단계</span>
+<span class="tag flag">의견 마감 12/2</span>
+<span class="date">2026-10-23 공고</span>
+</div><h3>영업 인수 전 처분 이력 조회 가능(예고)</h3>
+<p class="lead">양수인이 몰랐음을 증명하면 이전 영업자의 행정처분이 넘어오지 않게 한다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>기획</span><span>품질·RA</span><span>영업</span></span>
+</div>
+<ul class="pts"><li>법제처공고 제2026-156호, 건기식법 등 54개 법률</li><li>양도인 동의 받아 처분 이력·진행 서류 발급 요청</li><li>승계 기간이 없던 조항은 기간을 명확히 함</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>건기식 공장·브랜드 인수를 검토하는 고객사에 계약 전 처분 이력 확인 절차를 넣도록 안내하세요.</div></div>
+<div class="links"><a href="https://community.lawmaking.go.kr/gcom/ogLmPp/89154?opnOpYn=Y" target="_blank" rel="noopener">국민참여입법센터 원문</a></div>
+</article>
+<article class="item anim" style="--i:3"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">예고 단계</span>
+<span class="tag flag">의견 마감 12/23</span>
+<span class="date">2026-10-23 발표</span>
+</div><h3>간 주의 원료 혼합 금지·유산균 상한 폐지(예고)</h3>
+<p class="lead">복합 섭취 이상사례를 막으려 원료 배합 기준을 조이고 일부 상한은 푼다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>기획</span><span>품질·RA</span></span>
+</div>
+<ul class="pts"><li>공고 제2026-513호, 10/23 행정예고</li><li>간 질환 주의사항 있는 원료끼리 혼합 금지</li><li>기능성 원료를 기타원료로 쓸 땐 섭취량 30% 미만</li><li>프로바이오틱스 일일섭취량 상한 삭제</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>간 주의 원료 복합 처방 고객사 목록을 뽑아 두고, 의견 제출 여부를 12월 초까지 정하세요.</div></div>
+<div class="links"><a href="https://www.mfds.go.kr/brd/m_209/view.do?seq=44304" target="_blank" rel="noopener">식약처 원문</a><a href="https://www.dailypharm.com/user/news/343745" target="_blank" rel="noopener">데일리팜</a></div>
+</article>
+<p class="note">11/11~12 식약처 건기식 관련 새 행정예고·고시는 없었습니다. 법제처 일괄 개정안과 시행이 다가온 건을 담았습니다.</p>
+</section>
+<section id="official"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l7 4V6l-7 4H4z"/><path d="M17.5 9a4 4 0 0 1 0 6"/></svg></span><h2>발표·단속</h2><span class="count">2건</span></div>
+<article class="item anim" style="--i:0"><div class="tags"><span class="tag press">언론</span>
+<span class="tag flag">후속 보도 확산</span>
+<span class="tag flag">시정 조치</span>
+<span class="date">2026-11-11 발표</span>
+</div><h3>건강식품 &#x27;특허&#x27; 표시, 89%가 소멸 권리</h3>
+<p class="lead">지식재산처 점검 597건 적발 소식이 업계지까지 퍼져 소비자 문의가 늘 수 있다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>마케팅</span><span>영업</span><span>품질·RA</span></span>
+</div>
+<ul class="pts"><li>온라인 판매글 점검, 허위표시 597건 적발</li><li>소멸 권리를 유효처럼 표시 534건(89.4%)</li><li>건기식 292건, 기타가공품 213건 순</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>상세페이지의 특허번호를 KIPRIS(특허정보검색)로 조회해 소멸·출원 중 표기를 고치도록 고객사에 보내세요.</div></div>
+<div class="links"><a href="https://www.seoul.co.kr/news/society/2026/11/11/20261111500096" target="_blank" rel="noopener">서울신문</a><a href="https://www.news1.kr/local/daejeon-chungnam/6350001" target="_blank" rel="noopener">뉴스1</a></div>
+</article>
+<article class="item anim" style="--i:1"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">해외직구</span>
+<span class="tag flag">판매 차단</span>
+<span class="date">2026-10-29 발표</span>
+</div><h3>직구 키성장·집중력 제품 37개 위해성분</h3>
+<p class="lead">수능 직전 집중력 제품 수요가 몰리는 시기라 다시 짚는다.</p>
+<div class="meter">
+<span class="lv" data-l="1"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>참고</b></span>
+<span class="who"><span>기획</span><span>영업</span></span>
+</div>
+<ul class="pts"><li>60개 중 37개(61.7%) 반입차단 성분 확인</li><li>키 성장 30개 중 19개, 집중력 30개 중 18개</li><li>5-HTP·엘-도파·빈포세틴 등 전문의약품 성분</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>&#x27;집중력·키&#x27; 기획 문의는 국내 인정 원료로만 설계하고 해외 직구 처방 모방은 거절하세요.</div></div>
+<div class="links"><a href="https://biz.sbs.co.kr/amp/article/20000342983" target="_blank" rel="noopener">SBS Biz</a><a href="https://www.nutraingredients.com/Article/2026/11/05/mfds-flags-height-growth-brain-supplements-containing-5-htp/" target="_blank" rel="noopener">NutraIngredients</a></div>
+</article>
+<p class="note">11/11~12 식약처 보도자료는 의약품·의료기기·국제협력 위주로 건기식 직접 발표가 없었습니다.</p>
+</section>
+<section id="rnd"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7.5 15h9"/></svg></span><h2>원료·연구</h2><span class="count">3건</span></div>
+<article class="item anim" style="--i:0"><div class="tags"><span class="tag press">언론</span>
+<span class="tag flag">제출 기한 12/31</span>
+<span class="tag flag">결과 2027년 12월</span>
+<span class="date">2026-08-24 발표</span>
+</div><h3>빌베리 등 10종 재평가, 자료 12/31 마감</h3>
+<p class="lead">2027년 정기 재평가 원료 10종은 연말까지 새 연구자료를 내야 한다.</p>
+<div class="meter">
+<span class="lv" data-l="3"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>매우 중요</b></span>
+<span class="who"><span>품질·RA</span><span>기획</span><span>영업</span></span>
+</div>
+<ul class="pts"><li>고시형 1종: 빌베리추출물(눈 피로 개선)</li><li>개별인정 9종: 락토페린·보이차추출물·핑거루트 등</li><li>최초 인정 때 낸 자료는 불인정, 새 자료만 인정</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>해당 원료 제품의 원료사 자료 제출 여부를 이달 안에 확인하고, 미제출이면 대체 처방을 준비하세요.</div></div>
+<div class="links"><a href="https://m.dailypharm.com/user/news/341699" target="_blank" rel="noopener">데일리팜</a><a href="https://www.segye.com/newsView/20260824511009" target="_blank" rel="noopener">세계일보</a></div>
+</article>
+<article class="item anim" style="--i:1"><div class="tags"><span class="tag press">언론</span>
+<span class="tag flag">결과 연말 발표 예정</span>
+<span class="date">2026-01-23 발표</span>
+</div><h3>히알루론산·강황 등 9종 재평가, 연말 결과</h3>
+<p class="lead">올해 재평가 중인 원료 9종의 결과가 연말에 나와 표시 변경이 생길 수 있다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>품질·RA</span><span>기획</span></span>
+</div>
+<ul class="pts"><li>고시형 2종: 히알루론산, 홍경천추출물</li><li>개별인정 7종: 강황·보스웰리아·매스틱 검 등</li><li>결과에 따라 인정 취소·섭취량·주의사항 변경 가능</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>해당 원료 제품 목록과 포장재 재고를 미리 파악해 결과 발표 직후 표시 변경에 바로 대응하세요.</div></div>
+<div class="links"><a href="https://dailypharm.com/user/news/335078" target="_blank" rel="noopener">데일리팜</a></div>
+</article>
+<article class="item anim" style="--i:2"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">예고 단계</span>
+<span class="tag flag">의견 마감 12/23</span>
+<span class="date">2026-10-23 발표</span>
+</div><h3>마그네슘·철·엽산 새 원료 3종 추가(예고)</h3>
+<p class="lead">기준·규격 개정안에 영양성분 원료 선택지를 넓히는 내용도 담겼다.</p>
+<div class="meter">
+<span class="lv" data-l="1"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>참고</b></span>
+<span class="who"><span>기획</span><span>영업</span></span>
+</div>
+<ul class="pts"><li>구연산마그네슘·구연산제일철 추가</li><li>엽산 원료로 메틸테트라하이드로엽산칼슘 추가</li><li>EPA·DHA 함유 유지 제조방법 확대</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>새 원료 공급처·단가 견적을 미리 받아 두면 확정 고시 직후 제안서에 바로 넣을 수 있습니다.</div></div>
+<div class="links"><a href="https://www.mfds.go.kr/brd/m_209/view.do?seq=44304" target="_blank" rel="noopener">식약처 원문</a><a href="https://www.bosa.co.kr/news/articleView.html?idxno=3014887" target="_blank" rel="noopener">의학신문</a></div>
+</article>
+<p class="note">최근 7일 새 개별인정(회사가 직접 기능성을 인정받는 원료) 발표는 확인되지 않았습니다.</p>
+</section>
+<section id="market"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><h2>시장·해외</h2><span class="count">2건</span></div>
+<article class="item anim" style="--i:0"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">중국(SAMR)</span>
+<span class="tag flag">시행 12/1</span>
+<span class="date">2025-12-12 공포</span>
+</div><h3>中, 보건식품 일부 공정만 위탁 금지(12/1)</h3>
+<p class="lead">중국 식품 위탁생산 규정이 시행되며 보건식품은 전 공정을 한 수탁사가 맡아야 한다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>영업</span><span>기획</span><span>품질·RA</span></span>
+</div>
+<ul class="pts"><li>시장감독관리총국령 제113호, 12/1 시행</li><li>전 공정 생산이 필요한 식품은 일부 공정 위탁 금지</li><li>보건식품 위탁자는 등록증 보유자여야 함(해설)</li><li>시행 전 생산분은 유통기한까지 판매 가능</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>중국 현지 공장에 포장·충전만 맡기는 고객사가 있는지 확인하고, 한국 완제품 수출 전환안을 제안하세요.</div></div>
+<div class="links"><a href="https://www.news.cn/fortune/20251229/faf3ea802aeb47028177bd317149fcbb/c.html" target="_blank" rel="noopener">신화망(규정 공포)</a><a href="https://www.cirs-group.com/cn/food/bao-jian-shi-pin-zhao-dai-jia-gong-shi-jian-zong-ju-zui-xin-wen-da" target="_blank" rel="noopener">CIRS 해설</a></div>
+</article>
+<article class="item anim" style="--i:1"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">식약처 생산실적</span>
+<span class="tag flag">2025년 기준</span>
+<span class="date">2026-05-29 발표</span>
+</div><h3>건기식 수출 3.2억달러, 3년째 두 자릿수↑</h3>
+<p class="lead">국내 생산은 2.2% 늘어 정체였지만 수출은 14.2% 늘었다.</p>
+<div class="meter">
+<span class="lv" data-l="1"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>참고</b></span>
+<span class="who"><span>영업</span><span>기획</span></span>
+</div>
+<ul class="pts"><li>2025년 생산액 2조 8,230억원(+2.2%)</li><li>수출 3억 1,817만달러(+14.2%)</li><li>수출 1위 비타민·무기질 8,177만달러</li><li>EPA·DHA·프로바이오틱스 포함 3품목이 약 60%</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>내수 정체를 감안해 수출 상위 3품목 위주로 해외 바이어용 OEM 제안서를 따로 준비하세요.</div></div>
+<div class="links"><a href="https://www.foodtoday.or.kr/news/article.html?no=205160" target="_blank" rel="noopener">푸드투데이</a><a href="https://newsseoul.co.kr/news/view/1065583216141388" target="_blank" rel="noopener">뉴스서울</a></div>
+</article>
+</section>
+<section id="marketing"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span><h2>마케팅</h2><span class="count">2건</span></div>
+<article class="item anim" style="--i:0"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">화제 성분</span>
+<span class="tag flag">2025년 기준</span>
+<span class="date">2026-05-29 발표</span>
+</div><h3>비타민·무기질, 홍삼 제치고 판매 1위</h3>
+<p class="lead">소비 중심이 단일 영양성분으로 옮겨 가며 홍삼 생산이 크게 줄었다.</p>
+<div class="meter">
+<span class="lv" data-l="2"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>중요</b></span>
+<span class="who"><span>마케팅</span><span>기획</span></span>
+</div>
+<ul class="pts"><li>비타민·무기질 생산 6,351억원(+16.3%)</li><li>홍삼 생산 3,938억원(전년 4,592억원, -14.2%)</li><li>생산 상위: 비타민C·칼슘·아연·마그네슘·비타민D</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>홍삼 고객사에는 비타민·무기질을 더한 복합 콘셉트를, 신규 고객사에는 마그네슘·비타민D 단품을 먼저 제안하세요.</div></div>
+<div class="links"><a href="https://www.foodtoday.or.kr/news/article.html?no=205160" target="_blank" rel="noopener">푸드투데이</a><a href="https://newsseoul.co.kr/news/view/1065583216141388" target="_blank" rel="noopener">뉴스서울</a></div>
+</article>
+<article class="item anim" style="--i:1"><div class="tags"><span class="tag off">공식</span>
+<span class="tag flag">확정 고시</span>
+<span class="tag flag">화장품 겸업 고객사</span>
+<span class="date">2026-11-10 고시</span>
+</div><h3>SPF, 시험으로 입증해야만 광고 가능</h3>
+<p class="lead">자외선차단지수는 인체·인체 외 시험으로 입증한 경우에만 표시·광고할 수 있다.</p>
+<div class="meter">
+<span class="lv" data-l="1"><span class="bars"><i></i><i></i><i></i></span>영향도 <b>참고</b></span>
+<span class="who"><span>마케팅</span><span>품질·RA</span></span>
+</div>
+<ul class="pts"><li>「화장품 표시·광고 실증에 관한 규정」 제2026-76호</li><li>영업자·판매자가 한 SPF 등 표현 모두 대상</li><li>11/11 식약처 게시, 시행일은 고시문 확인 필요</li></ul>
+<div class="impact"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><div><strong>우리에게 의미</strong>이너뷰티와 선케어를 묶어 파는 고객사는 세트 상세페이지의 SPF 표기를 시험성적서와 대조하게 하세요.</div></div>
+<div class="links"><a href="https://www.mfds.go.kr/brd/m_207/view.do?seq=15205" target="_blank" rel="noopener">식약처 원문</a></div>
+</article>
+</section>
+<section id="ideas"><div class="sh"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span><h2>제품기획 아이디어</h2><span class="count">3건</span></div>
+<p class="note">예고 단계 내용을 바탕으로 한 사전 기획안입니다. 출시는 확정 고시 뒤로 잡으세요.</p>
+<article class="item anim" style="--i:0"><div class="tags">
+<span class="tag off">근거 · 中 식품 위탁생산 규정 12/1 시행(보건식품 일부 공정 위탁 금지)·건기식 수출 14.2% 증가</span>
+</div><h3>중국향 &#x27;한국 완제품&#x27; 일괄 생산 패키지</h3><dl class="idea-grid">
+<div class="wide"><dt>콘셉트</dt><dd>원료 칭량부터 최종 포장까지 국내 한 공장에서 끝내고 공정 기록을 일괄 제공하는 수출 전용 OEM</dd></div>
+<div class=""><dt>타깃</dt><dd>중국 현지에서 충전·포장만 위탁하던 브랜드, 역직구·수출을 늘리려는 고객사</dd></div>
+<div class=""><dt>제형</dt><dd>정제·소프트캡슐(수출 상위 품목 기준)</dd></div>
+<div class="wide"><dt>핵심 원료</dt><dd>비타민·무기질 복합 / EPA·DHA 함유 유지</dd></div>
+<div class="wide"><dt>기능성 문구</dt><dd>EPA·DHA: 혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음</dd></div>
+<div class="warn wide"><dt>규제 주의</dt><dd>중국 내 보건식품 판매는 중국 등록·备案(비안) 별도 필요, 국내 인정 문구를 중국 광고에 그대로 쓰지 말 것</dd></div>
+</dl></article>
+<article class="item anim" style="--i:1"><div class="tags">
+<span class="tag off">근거 · 비타민·무기질 판매 1위·마그네슘·비타민D 생산 증가(5/29 발표)</span>
+</div><h3>마그네슘+비타민D &#x27;기본 2종&#x27; 데일리</h3><dl class="idea-grid">
+<div class="wide"><dt>콘셉트</dt><dd>많이 넣기보다 수요가 커진 두 성분만 담아 중복 섭취 걱정을 줄인 단순 처방</dd></div>
+<div class=""><dt>타깃</dt><dd>영양제를 처음 고르는 20~40대, 성분표를 비교하는 온라인 구매자</dd></div>
+<div class=""><dt>제형</dt><dd>1일 1정 정제 또는 츄어블</dd></div>
+<div class="wide"><dt>핵심 원료</dt><dd>구연산마그네슘(예고안 추가 원료, 확정 전엔 기존 원료) / 비타민D</dd></div>
+<div class="wide"><dt>기능성 문구</dt><dd>마그네슘: 에너지 이용에 필요, 신경과 근육 기능 유지에 필요 / 비타민D: 칼슘과 인이 흡수되고 이용되는데 필요, 뼈의 형성과 유지에 필요</dd></div>
+<div class="warn wide"><dt>규제 주의</dt><dd>비타민D 일일섭취량 상한 준수, &#x27;AI 의사 추천&#x27;·&#x27;꿀잠&#x27; 등 금지·오인 표현 사용 금지</dd></div>
+</dl></article>
+<article class="item anim" style="--i:2"><div class="tags">
+<span class="tag off">근거 · 홍삼 생산 14.2% 감소·비타민·무기질 1위(5/29 발표)</span>
+</div><h3>홍삼+비타민B군 &#x27;리뉴얼&#x27; 스틱</h3><dl class="idea-grid">
+<div class="wide"><dt>콘셉트</dt><dd>기존 홍삼 고객사 제품에 비타민B군을 더해 &#x27;홍삼만&#x27;에서 벗어난 데일리 피로 케어로 재포지셔닝</dd></div>
+<div class=""><dt>타깃</dt><dd>홍삼 매출이 줄어든 기존 브랜드, 30~50대 직장인</dd></div>
+<div class=""><dt>제형</dt><dd>액상 스틱 1일 1포</dd></div>
+<div class="wide"><dt>핵심 원료</dt><dd>홍삼 / 비타민B1·B2</dd></div>
+<div class="wide"><dt>기능성 문구</dt><dd>홍삼: 면역력 증진·피로개선에 도움을 줄 수 있음 / 비타민B2: 체내 에너지 생성에 필요</dd></div>
+<div class="warn wide"><dt>규제 주의</dt><dd>&#x27;피로 회복제&#x27;·&#x27;간 해독&#x27; 등 의약품 오인 표현 금지, 기준·규격 개정 확정 뒤 배합 규칙 재확인</dd></div>
+</dl></article>
+</section>
+<section id="sources"><details class="src"><summary>참고한 출처 21곳 보기</summary><ol>
+<li><a href="https://www.mfds.go.kr/brd/m_207/view.do?seq=15205" target="_blank" rel="noopener">식약처 - 「화장품 표시·광고 실증에 관한 규정」 일부개정고시 제2026-76호 (2026-11-11)</a></li>
+<li><a href="https://www.mfds.go.kr/brd/m_99/list.do" target="_blank" rel="noopener">식약처 - 보도자료 목록(11/10~11/12 건기식 직접 발표 없음 확인) (2026-11-12)</a></li>
+<li><a href="https://community.lawmaking.go.kr/gcom/ogLmPp/89154?opnOpYn=Y" target="_blank" rel="noopener">국민참여입법센터 - 행정제재처분 승계 절차 합리화 건강기능식품법 등 54개 법률 개정안 입법예고 (2026-10-23)</a></li>
+<li><a href="https://dailypharm.com/user/news/341236" target="_blank" rel="noopener">데일리팜 - AI 약사 내세운 식품 부당광고 제동…행정처분 신설 (2026-08-07)</a></li>
+<li><a href="https://www.kpanews.co.kr/news/articleView.html?idxno=535559" target="_blank" rel="noopener">약사공론 - AI 가짜 의약사 광고 금지…약사법·식품표시법 개정 공포 (2026-05-26)</a></li>
+<li><a href="https://www.khff.or.kr/user/info/InfoBoardUserView.do?_menuNo=402&amp;boardSeqno=10010&amp;postsSeqno=120210" target="_blank" rel="noopener">건강기능식품협회 - 법률 제·개정사항(법률 제21298호) (2025-12-30)</a></li>
+<li><a href="https://www.foodtoday.or.kr/mobile/article.html?no=206237" target="_blank" rel="noopener">푸드투데이 - GMO 완전표시제 단계적 의무화 (2026-07-08)</a></li>
+<li><a href="https://www.mfds.go.kr/brd/m_209/view.do?seq=44304" target="_blank" rel="noopener">식약처 - 「건강기능식품의 기준 및 규격」 일부개정고시(안) 행정예고 (2026-10-23)</a></li>
+<li><a href="https://www.dailypharm.com/user/news/343745" target="_blank" rel="noopener">데일리팜 - 식약처, 프로바이오틱스 섭취 상한선 삭제…제조 기준 완화 (2026-10-23)</a></li>
+<li><a href="https://www.seoul.co.kr/news/society/2026/11/11/20261111500096" target="_blank" rel="noopener">서울신문 - 온라인 유통 건강식품 지재권 &#x27;허위표시&#x27; 597건 적발 (2026-11-11)</a></li>
+<li><a href="https://www.news1.kr/local/daejeon-chungnam/6350001" target="_blank" rel="noopener">뉴스1 - 지식재산처, 건강식품 허위표시 597건 적발 (2026-11-11)</a></li>
+<li><a href="https://biz.sbs.co.kr/amp/article/20000342983" target="_blank" rel="noopener">SBS Biz - 집중력 높인다더니…해외직구 식품서 위해성분 무더기 검출 (2026-10-29)</a></li>
+<li><a href="https://www.nutraingredients.com/Article/2026/11/05/mfds-flags-height-growth-brain-supplements-containing-5-htp/" target="_blank" rel="noopener">NutraIngredients - MFDS flags height growth, brain supplements containing 5-HTP (2026-11-05)</a></li>
+<li><a href="https://m.dailypharm.com/user/news/341699" target="_blank" rel="noopener">데일리팜 - &#x27;눈 피로 개선&#x27; 빌베리 등 건기식 원료 10종 재평가 (2026-08-24)</a></li>
+<li><a href="https://www.segye.com/newsView/20260824511009" target="_blank" rel="noopener">세계일보 - 2027년 기능성 원료 재평가 대상 10종 (2026-08-24)</a></li>
+<li><a href="https://dailypharm.com/user/news/335078" target="_blank" rel="noopener">데일리팜 - 강황추출물 등 건기식 원료 9종 올해 재평가 착수 (2026-01-23)</a></li>
+<li><a href="https://www.bosa.co.kr/news/articleView.html?idxno=3014887" target="_blank" rel="noopener">의학신문 - 건강기능식품 기준·규격 개정안 (2026-10-23)</a></li>
+<li><a href="https://www.news.cn/fortune/20251229/faf3ea802aeb47028177bd317149fcbb/c.html" target="_blank" rel="noopener">신화망 - 시장감독관리총국 《食品委托生产监督管理办法》 공포 (2025-12-29)</a></li>
+<li><a href="https://www.cirs-group.com/cn/food/bao-jian-shi-pin-zhao-dai-jia-gong-shi-jian-zong-ju-zui-xin-wen-da" target="_blank" rel="noopener">CIRS - 보건식품 위탁가공 실무 문답 해설 (2026-06-30)</a></li>
+<li><a href="https://www.foodtoday.or.kr/news/article.html?no=205160" target="_blank" rel="noopener">푸드투데이 - 2025년 식품산업 생산실적(건강기능식품 2조8230억원) (2026-05-29)</a></li>
+<li><a href="https://newsseoul.co.kr/news/view/1065583216141388" target="_blank" rel="noopener">뉴스서울 - 식약처, 2025년 식품산업 생산실적 119조 원 (2026-05-29)</a></li>
+</ol></details>
+<p class="note">11/10~12 식약처 보도자료는 GLP-1 의약품 안전조치·유럽 위해평가기관 협력(11/12) 등으로, 협력 건은 본문이 첨부파일에만 있어 내용 확인 후 다음 브리핑에서 다룰 예정. 식육 미생물 검사 규정 예고(11/30 마감)·2차 R&amp;D 공모(의약품 분야)는 건기식과 거리가 멀어 뺐음.</p>
+<p class="note">손톱건강·구강건조·노인성 체취 새 기능성 가이드라인 계획(10/21 약사공론, 국감 서면답변)은 보도가 1곳뿐이라 이번에는 제외. 美 FDA·日 소비자청은 최근 7일 새 발표가 확인되지 않음. 특정 약국 AI 영양제 추천 서비스·개별 제품 라이브커머스 기사는 홍보성이라 제외함.</p>
+</section>
+<footer>정보 제공 목적이며 법률 자문이 아닙니다.<br>행정예고 내용은 확정 전 변경될 수 있습니다.</footer>
+</div><script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    var end = parseInt(el.getAttribute('data-count'),10); if (!(end>0)) return;
+    var t0 = null, dur = 900;
+    function step(t){ if(!t0) t0=t; var p=Math.min(1,(t-t0)/dur); el.textContent = Math.round(end*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); }
+    el.textContent = '0'; requestAnimationFrame(step);
+  });
+})();
+</script></body></html>
